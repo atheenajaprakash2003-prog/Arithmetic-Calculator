@@ -1,0 +1,254 @@
+:root {
+    --bg-color: #0d1117;
+    --calc-bg: rgba(30, 33, 40, 0.7);
+    --calc-border: rgba(255, 255, 255, 0.1);
+    --display-color: #ffffff;
+    --display-secondary: #8b949e;
+    --key-bg: rgba(255, 255, 255, 0.05);
+    --key-hover: rgba(255, 255, 255, 0.1);
+    --key-active: rgba(255, 255, 255, 0.15);
+    --key-text: #e6edf3;
+    --operator-bg: rgba(88, 166, 255, 0.15);
+    --operator-hover: rgba(88, 166, 255, 0.25);
+    --operator-text: #58a6ff;
+    --equals-bg: #238636;
+    --equals-hover: #2ea043;
+    --equals-text: #ffffff;
+    --action-bg: rgba(248, 81, 73, 0.15);
+    --action-hover: rgba(248, 81, 73, 0.25);
+    --action-text: #ff7b72;
+}
+
+[data-theme="light"] {
+    --bg-color: #f6f8fa;
+    --calc-bg: rgba(255, 255, 255, 0.8);
+    --calc-border: rgba(0, 0, 0, 0.1);
+    --display-color: #1f2328;
+    --display-secondary: #656d76;
+    --key-bg: rgba(0, 0, 0, 0.04);
+    --key-hover: rgba(0, 0, 0, 0.08);
+    --key-active: rgba(0, 0, 0, 0.12);
+    --key-text: #24292f;
+    --operator-bg: rgba(9, 105, 218, 0.1);
+    --operator-hover: rgba(9, 105, 218, 0.2);
+    --operator-text: #0969da;
+    --equals-bg: #1f883d;
+    --equals-hover: #26a249;
+    --equals-text: #ffffff;
+    --action-bg: rgba(207, 34, 46, 0.1);
+    --action-hover: rgba(207, 34, 46, 0.2);
+    --action-text: #cf222e;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-color);
+    background-image: 
+        radial-gradient(circle at 15% 50%, rgba(88, 166, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(236, 119, 216, 0.15) 0%, transparent 50%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.5s ease, background-image 0.5s ease;
+    overflow: hidden;
+}
+
+.calculator-wrapper {
+    perspective: 1000px;
+}
+
+.calculator {
+    width: 340px;
+    background: var(--calc-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--calc-border);
+    border-radius: 30px;
+    padding: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 
+                0 0 0 1px inset rgba(255, 255, 255, 0.05);
+    transform-style: preserve-3d;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                box-shadow 0.3s ease;
+    animation: floatIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.calculator:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3), 
+                0 0 0 1px inset rgba(255, 255, 255, 0.05),
+                0 0 40px rgba(88, 166, 255, 0.1);
+}
+
+.display {
+    text-align: right;
+    margin-bottom: 24px;
+    padding: 10px 10px 20px;
+    border-bottom: 1px solid var(--calc-border);
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.previous-operand {
+    color: var(--display-secondary);
+    font-size: 1.1rem;
+    font-weight: 400;
+    min-height: 1.5rem;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.current-operand {
+    color: var(--display-color);
+    font-size: 3rem;
+    font-weight: 500;
+    line-height: 1.1;
+    word-wrap: break-word;
+    word-break: break-all;
+    transition: all 0.2s ease-out;
+    letter-spacing: -1px;
+}
+
+.keys {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.key {
+    border: none;
+    outline: none;
+    background: var(--key-bg);
+    color: var(--key-text);
+    font-family: inherit;
+    font-size: 1.4rem;
+    font-weight: 500;
+    height: 64px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.key::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    transition: transform 0.4s ease-out, opacity 0.3s ease-out;
+}
+
+.key:active::after {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 1;
+    transition: 0s;
+}
+
+.key:hover {
+    background: var(--key-hover);
+    transform: translateY(-2px);
+}
+
+.key:active {
+    background: var(--key-active);
+    transform: translateY(1px) scale(0.95);
+}
+
+.key.operator {
+    background: var(--operator-bg);
+    color: var(--operator-text);
+    font-size: 1.6rem;
+}
+
+.key.operator:hover {
+    background: var(--operator-hover);
+}
+
+.key.action {
+    background: var(--action-bg);
+    color: var(--action-text);
+    font-size: 1.2rem;
+}
+
+.key.action[data-action="theme"] {
+    background: var(--key-bg);
+    color: var(--key-text);
+    font-size: 1.4rem;
+}
+
+.key.action[data-action="theme"]:hover {
+    background: var(--key-hover);
+}
+
+.key.action:hover {
+    background: var(--action-hover);
+}
+
+.key.equals {
+    background: var(--equals-bg);
+    color: var(--equals-text);
+    font-size: 1.8rem;
+    box-shadow: 0 4px 14px 0 rgba(46, 160, 67, 0.39);
+}
+
+.key.equals:hover {
+    background: var(--equals-hover);
+    box-shadow: 0 6px 20px rgba(46, 160, 67, 0.23);
+}
+
+/* Animations */
+@keyframes floatIn {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.9) rotateX(10deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateX(0deg);
+    }
+}
+
+.animate-pop {
+    animation: popText 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popText {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Ripple effect container */
+.ripple {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-anim 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple-anim {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
